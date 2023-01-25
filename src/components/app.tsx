@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import Contest from "./contest";
 import ContestList from "./contest-list";
+import AddNewContest from "./add-new-contest";
 
 const App = ({ initialData }) => {
   const [page, setPage] = useState<"contestList" | "contest">(
@@ -17,7 +18,7 @@ const App = ({ initialData }) => {
         ? "contest"
         : "contestList";
       setPage(newPage);
-      setCurrentContest({id: event.state?.contestId});
+      setCurrentContest({ id: event.state?.contestId });
     };
   }, []);
 
@@ -28,33 +29,43 @@ const App = ({ initialData }) => {
       `/contest/${contestId}`,
     );
     setPage("contest");
-    setCurrentContest({id: contestId});
+    setCurrentContest({ id: contestId });
   };
 
-
-
   const navigateToContestList = () => {
-    window.history.pushState( {}, "", "/");
+    window.history.pushState({}, "", "/");
     setPage("contestList");
     setCurrentContest(undefined);
   };
 
+  const onNewContest = (newContest) => {
+    window.history.pushState(
+      { contestId: newContest.id },
+      "",
+      `/contest/${newContest.id}`,
+    );
+    setPage("contest");
+    setCurrentContest(newContest);
+  };
 
   const pageContent = () => {
     switch (page) {
       case "contestList":
         return (
-          <ContestList
-            initialContests={initialData.contests}
-            onContestClick={navigateToContest}
-          />
+          <>
+            <ContestList
+              initialContests={initialData.contests}
+              onContestClick={navigateToContest}
+            />
+            <AddNewContest onSuccess={onNewContest} />
+          </>
         );
       case "contest":
         return (
-          <Contest 
+          <Contest
             initialContest={currentContest}
-            onContesListClick={navigateToContestList}
-           />
+            onContestListClick={navigateToContestList}
+          />
         );
     }
   };
