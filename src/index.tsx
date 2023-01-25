@@ -1,11 +1,14 @@
-import {createRoot} from "react-dom/client";
+import { createRoot } from "react-dom/client";
+import axios from "axios";
 
-const App = () => {
-    return  <div>Hello World</div>;
-};
+import App from "./components/app";
+import { API_SERVER_URL } from "./public-config";
 
-const container = document.getElementById("app")
-const root = createRoot(container)
+const container = document.getElementById("app");
+const root = createRoot(container);
 
-
-root.render(<App/>);
+axios.get(`${API_SERVER_URL}/contests`).then((resp) => {
+  root.render(
+    <App initialData={{ contests: resp.data.contests }} />,
+  );
+});
